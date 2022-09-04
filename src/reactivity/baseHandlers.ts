@@ -1,4 +1,5 @@
 import {track, trigger} from "./effect";
+import {ReactiveFlags} from "./reactive";
 
 const get=createGetter()
 const set=createSetter()
@@ -8,6 +9,12 @@ const readOnlySet=createSetter(true)
 
 function createGetter(isReadOnly = false) {
     return function get(target, key) {
+        //This part is used to check whether data is read only or is reactive
+        if (key===ReactiveFlags.IS_REACTIVE){
+            return !isReadOnly
+        } else if (key===ReactiveFlags.IS_READONLY){
+            return isReadOnly
+        }
         const res = Reflect.get(target, key)
         //collect deps
         if (!isReadOnly) {
