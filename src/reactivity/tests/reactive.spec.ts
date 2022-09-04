@@ -5,7 +5,7 @@ describe('reactive', () => {
         const original = {foo: 1}
         const observed=reactive(original)
         expect(observed).not.toBe(original)
-        expect(original.foo).toBe(1)
+        expect(observed.foo).toBe(1)
     })
 
 })
