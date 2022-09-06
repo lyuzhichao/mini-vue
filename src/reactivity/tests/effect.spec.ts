@@ -67,7 +67,8 @@ describe('effect', () => {
         expect(dummy).toBe(2)
         //Stopped effect should be mannually callable
         stop(runner)
-        obj.prop=3
+        // obj.prop=3 //only contain set operation
+        obj.prop++//obj.prop=obj.prop+1 which contains both get and set operations
         expect(dummy).toBe(2)
         runner()
         expect(dummy).toBe(3)

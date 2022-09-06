@@ -1,6 +1,7 @@
 import {extend} from "../shared";
 
 let activeEffect;
+let shouldTrack;
 class ReactiveEffect{
     private _fn:any
     deps=[]
@@ -10,8 +11,16 @@ class ReactiveEffect{
         this._fn=fn
     }
     run(){
+        if (!this.active){
+            return this._fn()
+        }
+        //should track or collect side effect
+        shouldTrack=true
         activeEffect=this
-        return this._fn()
+        const result=this._fn()
+        //reset shouldTrack status
+        shouldTrack=false
+        return result
     }
     stop(){
         if (this.active){
@@ -28,9 +37,19 @@ function cleanupEffect(effect){
     effect.deps.forEach((dep:any)=>{
         dep.delete(effect)
     })
+    effect.deps.length=0
 }
+
+function isTracking(){
+    return shouldTrack && activeEffect!==undefined
+}
+
+
 const targetMap=new WeakMap()
 export function track(target,key){
+    // if (!activeEffect) return
+    // if (!shouldTrack) return
+    if (!isTracking()) return
     //use target as key to get depsMap, and use key to get dep
     let depsMap=targetMap.get(target)
     if (!depsMap){
@@ -42,7 +61,8 @@ export function track(target,key){
         dep=new Set()
         depsMap.set(key,dep)
     }
-    if (!activeEffect) return
+    if (dep.has(activeEffect)) return;
+
     dep.add(activeEffect)
     activeEffect.deps.push(dep)
 }
