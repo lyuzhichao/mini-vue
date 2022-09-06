@@ -8,7 +8,11 @@ const set=createSetter()
 const readOnlyGet=createGetter(true)
 const readOnlySet=createSetter(true)
 
-function createGetter(isReadOnly = false) {
+const shallowReadOnlyGet=createGetter(true,true)
+const shallowReadOnlySet=createSetter(true)
+
+
+function createGetter(isReadOnly = false,shallow=false) {
     return function get(target, key) {
         //This part is used to check whether data is read only or is reactive
         if (key===ReactiveFlags.IS_REACTIVE){
@@ -17,6 +21,11 @@ function createGetter(isReadOnly = false) {
             return isReadOnly
         }
         const res = Reflect.get(target, key)
+
+        if (shallow){
+            return res
+        }
+
         if (isObject(res)){
             return isReadOnly?readonly(res):reactive(res)
         }
@@ -48,4 +57,8 @@ export const mutableHandlers={
 export const readOnlyHandlers={
     get:readOnlyGet,
     set:readOnlySet
+}
+export const shallowReadonlyHandlers = {
+    get:shallowReadOnlyGet,
+    set:shallowReadOnlySet
 }
