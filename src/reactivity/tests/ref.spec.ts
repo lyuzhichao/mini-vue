@@ -1,9 +1,9 @@
 import {reactive} from "../reactive";
-import {ref,isRef,unRef} from "../ref"
+import {ref,isRef,unRef,proxyRefs} from "../ref"
 import {effect} from "../effect";
 
 describe('ref',()=>{
-    it.only('happy path',()=>{
+    it('happy path',()=>{
         const a=ref(1)
         expect(a.value).toBe(1)
     })
@@ -49,6 +49,25 @@ describe('ref',()=>{
         const a=ref(1)
         expect(unRef(a)).toBe(1)
         expect(unRef(1)).toBe(1)
+    })
+    //use ref in template without using ref.value
+    it('proxyRefs',()=>{
+        const user={
+            age:ref(10),
+            name:'xiaohong'
+        }
+        const proxyUser=proxyRefs(user)
+        expect(user.age.value).toBe(10)
+        expect(proxyUser.age).toBe(10)
+        expect(proxyUser.name).toBe('xiaohong')
+
+        // proxyUser.age=20
+        // expect(proxyUser.age).toBe(20)
+        // expect(user.age.value).toBe(20)
+        //
+        // proxyUser.age=ref(10)
+        // expect(proxyUser.age).toBe(10)
+        // expect(user.age.value).toBe(10)
     })
 
 })

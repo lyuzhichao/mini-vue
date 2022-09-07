@@ -24,8 +24,6 @@ class RefImpl {
             this._rawValue=newValue
             this._value=convert(newValue)
             triggerEffects(this.dep)
-        } else {
-            return
         }
     }
 }
@@ -51,5 +49,19 @@ export function unRef(ref){
         return ref._value
     }
     return ref
+}
 
+export function proxyRefs(objectWithRefs){
+    return new Proxy(objectWithRefs,{
+        get(target,key){
+           return unRef(Reflect.get(target,key))
+        },
+        set(target,key,value){
+            if (isRef(target[key]) && !isRef(value)){
+                target[key].value=value
+            } else {
+                return Reflect.set(target,key,value)
+            }
+        }
+    })
 }
