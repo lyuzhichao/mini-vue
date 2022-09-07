@@ -6,6 +6,7 @@ class RefImpl {
     private _value:any
     private _rawValue:any
     public dep
+    public _v_isRef=true
     constructor(value) {
         //take care of edge case for Object value
         //1. value is Object or not
@@ -41,4 +42,14 @@ function trackRefValue(ref){
 
 export function ref(value){
     return new RefImpl(value)
+}
+export function isRef(ref){
+    return !!ref._v_isRef
+}
+export function unRef(ref){
+    if (isRef(ref)){
+        return ref._value
+    }
+    return ref
+
 }
