@@ -2,7 +2,7 @@ import {extend} from "../shared";
 
 let activeEffect;
 let shouldTrack;
-class ReactiveEffect{
+export class ReactiveEffect{
     private _fn:any
     deps=[]
     active=true //This is the flag whether stop function has been already called
