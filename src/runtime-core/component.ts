@@ -34,7 +34,5 @@ export function handleSetupResult(instance,setUpResult){
 
 export function finishComponentSetUp(instance){
     const Component=instance.type
-    if (Component.render){
-        instance.render=Component.render
-    }
+    instance.render=Component.render
 }

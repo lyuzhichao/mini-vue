@@ -7,6 +7,8 @@ export function render(vnode,container){
 
 export function patch(vnode,container){
     //process component
+    //if vnode is element, call processElement
+    // processElement()
     processComponent(vnode,container)
 }
 

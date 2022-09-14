@@ -7,6 +7,7 @@ export class ReactiveEffect{
     deps=[]
     active=true //This is the flag whether stop function has been already called
     onStop?:()=>void
+
     constructor(fn,public scheduler?:Function | undefined) {
         this._fn=fn
     }
@@ -104,6 +105,6 @@ export function effect(fn,options:any={}){
     extend(_effect,options) //This is same as line 72
     _effect.run()
     const runner=_effect.run.bind(_effect)
-    runner.effect=_effect
+    runner['effect']=_effect
     return runner
 }

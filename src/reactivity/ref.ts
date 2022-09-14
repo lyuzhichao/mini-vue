@@ -59,6 +59,7 @@ export function proxyRefs(objectWithRefs){
         set(target,key,value){
             if (isRef(target[key]) && !isRef(value)){
                 target[key].value=value
+                return true
             } else {
                 return Reflect.set(target,key,value)
             }
