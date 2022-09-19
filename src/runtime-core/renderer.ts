@@ -22,7 +22,7 @@ export function processElement(vnode,container){
 
 export function mountElement(vnode,container){
     //vnode.children -> string / array
-    const el=document.createElement(vnode.type)
+    const el=vnode.el=document.createElement(vnode.type)
     const {children}=vnode
     if (typeof children==="string"){
         el.textContent=children
@@ -47,14 +47,17 @@ export function processComponent(vnode,container){
     mountComponent(vnode,container)
 }
 
-export function mountComponent(vnode,container){
-    const instance=createComponentInstance(vnode)
+export function mountComponent(initialVnode,container){
+    const instance=createComponentInstance(initialVnode)
     setUpComponent(instance)
-    setupRenderEffect(instance,container)
+    setupRenderEffect(instance,initialVnode,container)
 }
 
-export function setupRenderEffect(instance,container){
-    const subTree=instance.render()
+export function setupRenderEffect(instance,initialVnode,container){
+    const {proxy}=instance
+    const subTree=instance.render().call(proxy)
     //subTree -> vnode -> patch - element -> mountElement
     patch(subTree,container)
+    //all elements -> mount
+    initialVnode.el=subTree.el
 }
