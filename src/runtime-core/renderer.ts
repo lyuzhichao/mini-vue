@@ -1,6 +1,7 @@
 import {createComponentInstance,setUpComponent} from "./component";
 // @ts-ignore
 import {isObject} from "../shared";
+import {ShapeFlags} from "../shared/shapeFlags";
 
 export function render(vnode,container){
     //call patch function
@@ -10,9 +11,13 @@ export function render(vnode,container){
 export function patch(vnode,container){
     //process component
     //if vnode is element, call processElement
-    if (typeof vnode.type==="string"){
+    //shapeFlag
+    //vnode->flag
+    //element
+    const {shapeFlag}=vnode
+    if (shapeFlag & ShapeFlags.ELEMENT){
         processElement(vnode,container)
-    } else if (isObject(vnode.type)){
+    } else if (shapeFlag & ShapeFlags.STATEFUL_ELEMENT){
         processComponent(vnode,container)
     }
 }
@@ -23,10 +28,10 @@ export function processElement(vnode,container){
 export function mountElement(vnode,container){
     //vnode.children -> string / array
     const el=vnode.el=document.createElement(vnode.type)
-    const {children}=vnode
-    if (typeof children==="string"){
+    const {children,shapeFlag}=vnode
+    if (shapeFlag & ShapeFlags.TEXT_CHILDREN){
         el.textContent=children
-    } else if (Array.isArray(children)){
+    } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN){
         mountChildren(vnode,el)
     }
     const {props}=vnode
@@ -61,3 +66,7 @@ export function setupRenderEffect(instance,initialVnode,container){
     //all elements -> mount
     initialVnode.el=subTree.el
 }
+
+
+
+

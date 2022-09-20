@@ -1,3 +1,4 @@
+// @ts-ignore
 import {extend} from "../shared";
 
 let activeEffect;

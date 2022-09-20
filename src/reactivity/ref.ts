@@ -1,5 +1,6 @@
 import {reactive} from "./reactive";
 import {isTracking, track, trackEffects, triggerEffects} from "./effect";
+// @ts-ignore
 import {hasChanged, isObject} from "../shared";
 
 class RefImpl {
