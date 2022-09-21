@@ -37,7 +37,13 @@ export function mountElement(vnode,container){
     const {props}=vnode
     for (const key in props){
         const val=props[key]
-        el.setAttribute(key,val)
+        const isOn=(key)=>/^on[A-Z]/.test(key)
+        if (isOn(key)){
+            el.addEventListener(key.slice(2).toLowerCase(),val)
+        } else {
+            el.setAttribute(key,val)
+        }
+
     }
     container.append(el)
 }
@@ -60,7 +66,7 @@ export function mountComponent(initialVnode,container){
 
 export function setupRenderEffect(instance,initialVnode,container){
     const {proxy}=instance
-    const subTree=instance.render().call(proxy)
+    const subTree=instance.render.call(proxy)
     //subTree -> vnode -> patch - element -> mountElement
     patch(subTree,container)
     //all elements -> mount

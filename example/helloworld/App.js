@@ -1,12 +1,16 @@
-import h from '../../lib/guide-mini-vue.esm'
+import {h} from '../../lib/guide-mini-vue.esm.js'
 
 export const App = {
     //render is required
     render() {
-        return h('div',
+        return h(
+            'div',
             {
                 id: 'root',
-                class: ['red', 'hard']
+                class: ['red', 'hard'],
+                onClick:()=>{
+                    console.log('click')
+                }
             },
             //setupState
             "HI, " + this.msg
