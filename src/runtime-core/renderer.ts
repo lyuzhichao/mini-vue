@@ -17,7 +17,7 @@ export function patch(vnode,container){
     const {shapeFlag}=vnode
     if (shapeFlag & ShapeFlags.ELEMENT){
         processElement(vnode,container)
-    } else if (shapeFlag & ShapeFlags.STATEFUL_ELEMENT){
+    } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT){
         processComponent(vnode,container)
     }
 }
