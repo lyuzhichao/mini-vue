@@ -2,6 +2,7 @@ import {createComponentInstance,setUpComponent} from "./component";
 // @ts-ignore
 import {isObject} from "../shared";
 import {ShapeFlags} from "../shared/shapeFlags";
+import {Fragment,Text} from "./vnode";
 
 export function render(vnode,container){
     //call patch function
@@ -14,13 +15,34 @@ export function patch(vnode,container){
     //shapeFlag
     //vnode->flag
     //element
-    const {shapeFlag}=vnode
-    if (shapeFlag & ShapeFlags.ELEMENT){
-        processElement(vnode,container)
-    } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT){
-        processComponent(vnode,container)
+    //Fragment is only used for rendering children
+    const {shapeFlag,type}=vnode
+    switch (type){
+        case Fragment:
+            processFragment(vnode,container)
+            break
+        case Text:
+            processText(vnode,container)
+            break
+        default:
+            if (shapeFlag & ShapeFlags.ELEMENT){
+                processElement(vnode,container)
+            } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT){
+                processComponent(vnode,container)
+            }
     }
 }
+
+export function processText(vnode,container){
+    const {children}=vnode
+    const textNode=(vnode.el=document.createTextNode(children))
+    container.append(textNode)
+}
+
+export function processFragment(vnode,container){
+    mountChildren(vnode,container)
+}
+
 export function processElement(vnode,container){
     mountElement(vnode,container)
 }

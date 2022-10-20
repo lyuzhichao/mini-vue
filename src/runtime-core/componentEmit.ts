@@ -6,7 +6,6 @@ export function emit(instance,event,...args){
     //TPP
     //First special function then general function
 
-
     const handlerName=toHanlderkey(camelize(event))
 
     const handler=props[handlerName]
