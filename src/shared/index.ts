@@ -1,5 +1,9 @@
 export const extend=Object.assign
 
+export const EMPTY_OBJ={}
+
+export {ShapeFlags} from './shapeFlags'
+
 export function isObject(val){
     return val!==null && typeof val==='object'
 }
