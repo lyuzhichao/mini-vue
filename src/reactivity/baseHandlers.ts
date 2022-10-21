@@ -14,6 +14,7 @@ const shallowReadOnlySet=createSetter(true)
 
 function createGetter(isReadOnly = false,shallow=false) {
     return function get(target, key) {
+
         //This part is used to check whether data is read only or is reactive
         if (key===ReactiveFlags.IS_REACTIVE){
             return !isReadOnly
