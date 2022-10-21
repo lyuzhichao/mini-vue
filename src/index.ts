@@ -1,2 +1,3 @@
 //mini-vue output
-export * from './runtime-core'
+// export * from './runtime-core'
+export * from  './runtime-dom'
