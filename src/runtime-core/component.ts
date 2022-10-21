@@ -25,15 +25,19 @@ export function setUpComponent(instance){
     initSlots(instance,instance.vnode.children)
     setupStatefulComponent(instance)
 }
+
+let currentInstance=null
 export function setupStatefulComponent(instance){
     const Component=instance.type
     instance.proxy=new Proxy({_:instance},publicInstanceProxyHandlers)
     const {setup}=Component
 
     if (setup) {
+        setCurrentInstance(instance)
         const setUpResult=setup(shallowReadOnly(instance.props),{emit:instance.emit})
         handleSetupResult(instance,setUpResult)
     }
+    setCurrentInstance(null)
 }
 
 export function handleSetupResult(instance,setUpResult){
@@ -46,4 +50,12 @@ export function handleSetupResult(instance,setUpResult){
 export function finishComponentSetUp(instance){
     const Component=instance.type
     instance.render=Component.render
+}
+
+export function getCurrentInstance(){
+    return currentInstance
+}
+
+export function setCurrentInstance(instance){
+    currentInstance=instance
 }
