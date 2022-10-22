@@ -100,7 +100,7 @@ export function createRenderer(options) {
         }
     }
 
-    function isSomeVNodeType(n1,n2){
+    function isSameVNodeType(n1,n2){
         return n1.type===n2.type && n1.key === n2.key
     }
 
@@ -114,7 +114,7 @@ export function createRenderer(options) {
             const n1=oldChildren[i]
             const n2=newChildren[i]
 
-            if (isSomeVNodeType(n1,n2)){
+            if (isSameVNodeType(n1,n2)){
                 patch(n1,n2,container,parentComponent,parentAnchor)
             } else {
                 break
@@ -126,7 +126,7 @@ export function createRenderer(options) {
             const n1=oldChildren[e1]
             const n2=newChildren[e2]
 
-            if (isSomeVNodeType(n1,n2)){
+            if (isSameVNodeType(n1,n2)){
                 patch(n1,n2,container,parentComponent,parentAnchor)
             } else {
                 break
@@ -145,12 +145,87 @@ export function createRenderer(options) {
                 }
 
             }
-        }
-        //new is shorter than old
-        if (i>e2){
+        } else if (i>e2){
+            //new is shorter than old
             while (i<=e1){
                 hostRemove(oldChildren[i].el)
                 i++
+            }
+        } else {
+            //process middle elements
+            let s1=i
+            let s2=i
+            const toBePatched=e2-s2+1
+            let patched=0
+            const keyToNewIndexMap=new Map()
+            const newIndexToOldIndexMap=new Array(toBePatched)
+            let moved=false
+            let maxNewIndexSoFar=0
+
+            for (let i=0;i<toBePatched;i++){
+                newIndexToOldIndexMap[i]=0
+            }
+
+            for (let i=s2;i<=e2;i++){
+                const nextChild=newChildren[i]
+                keyToNewIndexMap.set(nextChild.key,i)
+            }
+            for (let i=s1;i<=e1;i++){
+                const prevChild=oldChildren[i]
+
+                if (patched>=toBePatched){
+                    hostRemove(prevChild.el)
+                    continue
+                }
+                
+                let newIndex
+                //with key
+                if (prevChild.key!==null){
+                    newIndex=keyToNewIndexMap.get(prevChild.key)
+                } else {
+                    //without key
+                    for (let j=s2;j<=e2;j++){
+                        if (isSameVNodeType(prevChild,newChildren[j])){
+                            newIndex=j
+                            break
+                        }
+                    }
+                }
+                if (newIndex==undefined){
+                    hostRemove(prevChild.el)
+                } else {
+                    if (newIndex>=maxNewIndexSoFar){
+                        maxNewIndexSoFar=newIndex
+                    } else {
+                        //flag
+                        moved=true
+                    }
+                    newIndexToOldIndexMap[newIndex-s2]=i+1
+                    patch(prevChild,newChildren[newIndex],container,parentComponent,null)
+                    patched++
+                }
+            }
+
+            const increasingNewIndexSequence=moved?getSequence(newIndexToOldIndexMap):[]
+            let j=increasingNewIndexSequence.length-1
+            for (let i=toBePatched-1;i>=0;i--){
+                const nextIndex=i+s2
+                const nextChild=newChildren[nextIndex]
+                const anchor=nextIndex+1<l2?newChildren[nextIndex+1].el:null
+
+                if (newIndexToOldIndexMap[i]===0){
+                    patch(null,nextChild,container,parentComponent,anchor)
+                }
+
+                if (moved){
+                    if (j<0 || i!==increasingNewIndexSequence[j]){
+                        console.log('move position',i)
+                        hostInsert(nextChild.el,container,anchor)
+                    } else {
+                        j--
+                    }
+                }
+
             }
         }
     }
@@ -246,3 +321,43 @@ export function createRenderer(options) {
 }
 
 
+function getSequence(arr: number[]): number[] {
+    const p = arr.slice();
+    const result = [0];
+    let i, j, u, v, c;
+    const len = arr.length;
+    for (i = 0; i < len; i++) {
+        const arrI = arr[i];
+        if (arrI !== 0) {
+            j = result[result.length - 1];
+            if (arr[j] < arrI) {
+                p[i] = j;
+                result.push(i);
+                continue;
+            }
+            u = 0;
+            v = result.length - 1;
+            while (u < v) {
+                c = (u + v) >> 1;
+                if (arr[result[c]] < arrI) {
+                    u = c + 1;
+                } else {
+                    v = c;
+                }
+            }
+            if (arrI < arr[result[u]]) {
+                if (u > 0) {
+                    p[i] = result[u - 1];
+                }
+                result[u] = i;
+            }
+        }
+    }
+    u = result.length;
+    v = result[u - 1];
+    while (u-- > 0) {
+        result[u] = v;
+        v = p[v];
+    }
+    return result;
+}
