@@ -6,6 +6,7 @@ const publicPropertiesMap = {
     $slots:(i)=>i.slots,
     //$emit
     $emit: (i) => i.emit,
+    $props:(i)=>i.props
 }
 
 export const publicInstanceProxyHandlers={

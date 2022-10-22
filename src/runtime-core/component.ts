@@ -16,6 +16,7 @@ export function createComponentInstance(vnode,parent){
         emit:()=>{},
         parent,
         isMounted:false,
+        next:null,
         provides:parent?parent.provides:{},
 
     }
