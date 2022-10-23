@@ -26,8 +26,30 @@ function parseChildren(context) {
         }
     }
 
+    if (!node){
+        node=parseText(context)
+    }
+
     nodes.push(node)
     return nodes
+}
+
+function parseTextData(context,length){
+    const content=context.source.slice(0,length)
+    advanceBy(context,length)
+    return content
+}
+
+function parseText(context){
+
+    // const content=context.source.slice(0,context.source.length)
+    // advanceBy(context,content.length)
+    const content=parseTextData(context,context.source.length)
+    console.log('text: ',context.source)
+    return {
+        type:NodeTypes.TEXT,
+        tag:content
+    }
 }
 
 function parseTag(context,tagType){
@@ -61,7 +83,7 @@ function parseInterpolation(context) {
     console.log('context source',context.source)
 
     const rawContentLength=closeIndex-openDelimiter.length
-    const rawContent=context.source.slice(0,rawContentLength)
+    const rawContent=parseTextData(context,rawContentLength)
     console.log('rawContent: ',rawContent)
     const content=rawContent.trim()
     console.log('content: ',content)
