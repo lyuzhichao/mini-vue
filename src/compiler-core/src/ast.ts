@@ -3,5 +3,15 @@ export const enum NodeTypes {
     SIMPLE_EXPRESSION,
     ELEMENT,
     TEXT,
-    ROOT
+    ROOT,
+    COMPOND_EXPRESSION
+}
+
+export function createVNodeCall(context,vnodeTag,vnodeProps,vnodeChildren){
+    return {
+        type:NodeTypes.ELEMENT,
+        tag:vnodeTag,
+        props:vnodeProps,
+        children:vnodeChildren
+    }
 }

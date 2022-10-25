@@ -1,8 +1,13 @@
 export const extend=Object.assign
 
 export const EMPTY_OBJ={}
+export * from './toDisplayString'
 
 export {ShapeFlags} from './shapeFlags'
+
+export function isString(value){
+    return typeof value==='string'
+}
 
 export function isObject(val){
     return val!==null && typeof val==='object'
