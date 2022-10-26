@@ -141,7 +141,7 @@ export function createRenderer(options) {
         if (i>e1){
             if (i<=e2){
                 const nextPos=e2+1
-                const anchor=i+1<l2?newChildren[nextPos].el:null
+                const anchor=nextPos<l2?newChildren[nextPos].el:null
                 while (i<=e2){
                     patch(null,newChildren[i],container,parentComponent,anchor)
                     i++
@@ -338,7 +338,7 @@ export function createRenderer(options) {
                 const subTree = instance.render.call(proxy,proxy)
                 const preSubTree = instance.subTree
                 instance.subTree = subTree
-                patch(preSubTree,subTree, container, instance,anchor)
+                patch(preSubTree,subTree, preSubTree.el, instance,anchor)
             }
         },{
             scheduler(){

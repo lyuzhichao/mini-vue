@@ -15,6 +15,7 @@ export function generate(ast) {
 
     // const node=ast.codegenNode
     push(`function ${functionName}(${signature}){`)
+    push('return ')
     genNode(ast.codegenNode,context)
     push('}')
     console.log(context.code)

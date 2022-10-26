@@ -8,17 +8,15 @@ export function transformElement(node,context){
 
             const vnodeTag=`"${node.tag}"`
 
-            let vNodeProps
+            let vNodeProps=null
 
-            const children = node.children
-            let vnodeChildren=children[0]
-
-            // const vnodeElement = {
-            //     type:NodeTypes.ELEMENT,
-            //     tag:vnodeTag,
-            //     props:vNodeProps,
-            //     children:vnodeChildren
-            // }
+            let vnodeChildren = null
+            if (node.children.length > 0) {
+                if (node.children.length === 1) {
+                    const child = node.children[0]
+                    vnodeChildren = child
+                }
+            }
 
             node.codegenNode=createVNodeCall(
                 context,
