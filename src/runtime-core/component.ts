@@ -4,7 +4,6 @@ import {initProps} from "./componentProps";
 import {shallowReadOnly} from "../reactivity/reactive";
 import {initSlots} from "./componentSlots";
 import {proxyRefs} from "../reactivity";
-// import {proxyRefs} from "../reactivity";
 
 export function createComponentInstance(vnode,parent){
     const component={

@@ -1,7 +1,6 @@
 //mini-vue output
 // export * from './runtime-core'
 export * from './runtime-dom'
-export * from './reactivity'
 
 import * as runtimedom from './runtime-dom'
 import {baseCompile} from "./compiler-core/src";
